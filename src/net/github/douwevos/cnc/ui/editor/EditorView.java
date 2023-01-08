@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -13,16 +12,14 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JPopupMenu;
 
 import net.github.douwevos.cnc.model.Editable;
 import net.github.douwevos.cnc.model.EditableLayer;
+import net.github.douwevos.cnc.model.EditableModel;
 import net.github.douwevos.cnc.model.EditablePolyLine;
 import net.github.douwevos.cnc.model.EditableRectangle;
 import net.github.douwevos.cnc.model.ItemType;
-import net.github.douwevos.cnc.model.EditableModel;
 import net.github.douwevos.cnc.poly.PolyDot;
 import net.github.douwevos.cnc.poly.PolyForm;
 import net.github.douwevos.cnc.ui.ModelGraphics;
@@ -31,8 +28,7 @@ import net.github.douwevos.cnc.ui.ModelViewer;
 import net.github.douwevos.cnc.ui.editor.rectangle.EditableCreator;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemPolyLineController;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemRectangleController;
-import net.github.douwevos.justflat.contour.ContourLayer.ContourDotSelection;
-import net.github.douwevos.justflat.contour.ContourLayer.LineSelection;
+import net.github.douwevos.cnc.ui.editor.rectangle.PolyLineCreator;
 import net.github.douwevos.justflat.types.values.Bounds2D;
 import net.github.douwevos.justflat.types.values.Point2D;
 
@@ -55,12 +51,15 @@ public class EditorView extends ModelViewer {
 	
 	private SelectionModel selectionModel = new SelectionModel();
 	
+	
+	EditableLayer currentLayer;
 	private EditableCreator creator = null;
 	
 //	private ItemGrabInfo highligthed;
 	
 	public EditorView() {
 		EditableLayer layer = new EditableLayer();
+		currentLayer = layer;
 		layer.addItem(new EditableRectangle(new Bounds2D(10,10,10000,10000), 20));
 		List<PolyDot> dotList = new ArrayList<>();
 		dotList.add(new PolyDot(100,100, false));
@@ -105,6 +104,10 @@ public class EditorView extends ModelViewer {
 		
 		ModelGraphics modelGraphics = new ModelGraphics(gfx, camera);
 		paintSelectionModel(modelGraphics);
+		
+		if (creator!=null) {
+			creator.paint(modelGraphics, currentLayer);
+		}
 	}
 
 	private void paintSelectionModel(ModelGraphics modelGraphics) {
@@ -183,6 +186,11 @@ public class EditorView extends ModelViewer {
 		selectionModel.validate(model);
 	}
 
+	public void setCreator(EditableCreator editableCreator) {
+		creator = editableCreator;
+		repaint();
+	}
+
 	
 	@Override
 	public Bounds2D getModelBounds() {
@@ -191,6 +199,9 @@ public class EditorView extends ModelViewer {
 	
 	@Override
 	protected boolean onModelMouseEvent(ModelMouseEvent modelEvent) {
+		if (creator != null) {
+			return onModelMouseEventForCreator(modelEvent);
+		}
 		switch(modelEvent.type) {
 			case MOVED : 
 				ItemGrabInfo<?> grabInfo = resolveItemGrabInfo(modelEvent);
@@ -253,6 +264,21 @@ public class EditorView extends ModelViewer {
 		}
 		return super.onModelMouseEvent(modelEvent);
 	}
+
+
+	private boolean onModelMouseEventForCreator(ModelMouseEvent modelEvent) {
+		switch(modelEvent.type) {
+			case CLICKED : {
+				if (creator.clicked(modelEvent)) {
+					repaintModel();
+					return true;
+				}
+			} break;
+		
+		}
+		return super.onModelMouseEvent(modelEvent);
+	}
+
 
 
 	private void showPopupMenu(int x, int y, Point2D modelPoint) {
@@ -334,4 +360,7 @@ public class EditorView extends ModelViewer {
 		super.updateViewCamera();
 		modelImageDirty = true;
 	}
+
+
+
 }

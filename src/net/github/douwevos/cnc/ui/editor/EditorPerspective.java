@@ -9,6 +9,7 @@ import net.github.douwevos.cnc.holer.CncPerspectiveBoard;
 import net.github.douwevos.cnc.holer.CncRuntimeContext;
 import net.github.douwevos.cnc.holer.HolerModel;
 import net.github.douwevos.cnc.holer.HolerModelRun;
+import net.github.douwevos.cnc.ui.editor.rectangle.PolyLineCreator;
 import net.github.douwevos.cnc.ui.widget.CncUIButton;
 import net.github.douwevos.cnc.ui.widget.CncUIButtons;
 import net.github.douwevos.cnc.ui.widget.CncUIComponent;
@@ -48,7 +49,7 @@ public class EditorPerspective implements CncPerspective {
 		CncUIButtons buttons = new CncUIButtons();
 		
 		buttons.addButton(new CncUIButton("Add PolyLine", () -> {
-			
+			editorView.setCreator(new PolyLineCreator());
 		}));
 
 		

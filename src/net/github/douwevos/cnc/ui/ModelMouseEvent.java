@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 
 import net.github.douwevos.cnc.ui.controller.MouseEventType;
+import net.github.douwevos.justflat.types.values.Point2D;
 
 public class ModelMouseEvent {
 
@@ -33,6 +34,9 @@ public class ModelMouseEvent {
 		double ny = camera.getTranslateY() + loc * cameraZoom;
 		double nx = camera.getTranslateX() + mouseX * cameraZoom;
 		return new ModelMouseEvent(awtEvent, type, camera, nx, ny);
-		
+	}
+	
+	public Point2D createModelPoint() {
+		return new Point2D(Math.round(modelX), Math.round(modelY));
 	}
 }
