@@ -92,6 +92,8 @@ public class EditorPerspective implements CncPerspective {
 		
 		CncRuntimeContext runtimeContext = perspectiveBoard.getRuntimeContext();
 		HolerModel holerModel = runtimeContext.getHolerModel();
+		
+		editorView.setModel(runtimeContext.getEditableModel());
 //		holerDesignView.setHolerModel(holerModel);
 		
 	}

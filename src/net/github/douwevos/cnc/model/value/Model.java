@@ -3,8 +3,6 @@ package net.github.douwevos.cnc.model.value;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.github.douwevos.cnc.model.Editable;
-
 public class Model {
 
 	private final List<Layer> layers;
@@ -30,6 +28,10 @@ public class Model {
 			}
 		}
 		return new Model(newLayers);
+	}
+
+	public Layer layerAt(int index) {
+		return layers.get(index);
 	}
 
 }

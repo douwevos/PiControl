@@ -19,6 +19,7 @@ import net.github.douwevos.cnc.holer.calibration.CalibrationPerspective;
 import net.github.douwevos.cnc.holer.design.DesignPerspective;
 import net.github.douwevos.cnc.holer.run.RunPerspective;
 import net.github.douwevos.cnc.ui.editor.EditorPerspective;
+import net.github.douwevos.cnc.ui.plan.PlanPerspective;
 import net.github.douwevos.cnc.ui.widget.CncUIButton;
 import net.github.douwevos.cnc.ui.widget.CncUIButtons;
 import net.github.douwevos.cnc.ui.widget.CncUIFrame;
@@ -85,14 +86,20 @@ public class MainHoler {
 			perspectiveBoard.selectPerspective(designPerspective);
 		}));
 
+		CalibrationPerspective calibrationPerspective = new CalibrationPerspective(frameMenu);
 		buttons.addButton(new CncUIButton("Calibration", () -> {
-			CalibrationPerspective calibrationPerspective = new CalibrationPerspective(frameMenu);
 			perspectiveBoard.selectPerspective(calibrationPerspective);
 		}));
 
+		PlanPerspective planPerspective = new PlanPerspective(frameMenu);
+		buttons.addButton(new CncUIButton("Plan", () -> {
+			perspectiveBoard.selectPerspective(planPerspective);
+		}));
+
+		
+		RunPerspective runPerspective = new RunPerspective(frameMenu);
 		buttons.addButton(new CncUIButton("Run", () -> {
-			RunPerspective calibrationPerspective = new RunPerspective(frameMenu);
-			perspectiveBoard.selectPerspective(calibrationPerspective);
+			perspectiveBoard.selectPerspective(runPerspective);
 		}));
 		
 		frameMenu.add(buttons);

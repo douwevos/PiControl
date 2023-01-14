@@ -7,9 +7,7 @@ import java.awt.Image;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JPopupMenu;
@@ -17,18 +15,13 @@ import javax.swing.JPopupMenu;
 import net.github.douwevos.cnc.model.Editable;
 import net.github.douwevos.cnc.model.EditableLayer;
 import net.github.douwevos.cnc.model.EditableModel;
-import net.github.douwevos.cnc.model.EditablePolyLine;
-import net.github.douwevos.cnc.model.EditableRectangle;
 import net.github.douwevos.cnc.model.ItemType;
-import net.github.douwevos.cnc.poly.PolyDot;
-import net.github.douwevos.cnc.poly.PolyForm;
 import net.github.douwevos.cnc.ui.ModelGraphics;
 import net.github.douwevos.cnc.ui.ModelMouseEvent;
 import net.github.douwevos.cnc.ui.ModelViewer;
 import net.github.douwevos.cnc.ui.editor.rectangle.EditableCreator;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemPolyLineController;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemRectangleController;
-import net.github.douwevos.cnc.ui.editor.rectangle.PolyLineCreator;
 import net.github.douwevos.justflat.types.values.Bounds2D;
 import net.github.douwevos.justflat.types.values.Point2D;
 
@@ -42,10 +35,7 @@ public class EditorView extends ModelViewer {
 	}
 	
 	private boolean didDrag = false;
-//	private VolatileImage modelImage;
 	
-	private BufferedImage modelImage;
-	private volatile boolean modelImageDirty;
 	
 	private EditableModel model = new EditableModel();
 	
@@ -54,38 +44,51 @@ public class EditorView extends ModelViewer {
 	
 	EditableLayer currentLayer;
 	private EditableCreator creator = null;
+
+	private final EditableModel.Listener modelLister = new EditableModel.Listener() {
+		@Override
+		public void onModelChanged() {
+			validateSelection();
+			repaintModel();
+		}
+
+	};
+
+	private final SelectionModel.Listener selectionModelListener = new SelectionModel.Listener() {
+		@Override
+		public void selectionChanged() {
+			repaintModel();
+		}
+	};
+
 	
 //	private ItemGrabInfo highligthed;
 	
 	public EditorView() {
-		EditableLayer layer = new EditableLayer();
-		currentLayer = layer;
-		layer.addItem(new EditableRectangle(new Bounds2D(10,10,10000,10000), 20));
-		List<PolyDot> dotList = new ArrayList<>();
-		dotList.add(new PolyDot(100,100, false));
-		dotList.add(new PolyDot(800,900, false));
-		dotList.add(new PolyDot(2800,500, false));
-		dotList.add(new PolyDot(1500,700, true));
-		PolyForm polyForm = new PolyForm(dotList , true);
-		layer.addItem(new EditablePolyLine(polyForm , 20));
-		model.addLayer(layer);
 		
-		selectionModel.addListener(new SelectionModel.Listener() {
-			@Override
-			public void selectionChanged() {
-				repaintModel();
-			}
-		});
+		selectionModel.addListener(selectionModelListener);
 		
-		model.addListener(new EditableModel.Listener() {
-			@Override
-			public void onModelChanged() {
-				validateSelection();
-				repaintModel();
-			}
+		model.addListener(modelLister);
+	}
 
-		});
+	
+	public void setModel(EditableModel model) {
+		if (this.model == model) {
+			return;
+		}
+		selectionModel.clear();
+		creator = null;
+		modelImageDirty = true;
 		
+		if (this.model != null) {
+			this.model.removeListener(modelLister);
+		}
+		
+		this.model = model;
+		if (model != null) {
+			model.addListener(modelLister);
+			currentLayer = model.layerAt(0);
+		}
 	}
 	
 	
@@ -126,39 +129,10 @@ public class EditorView extends ModelViewer {
 		}
 	}
 
-	private Image updateModelImage() {
-		int width = getWidth();
-		int height = getHeight();
-		if (modelImage != null) {
-//			if (modelImage.validate(getGraphicsConfiguration())==VolatileImage.IMAGE_INCOMPATIBLE) {
-//				modelImage = null;
-//			} else 
-			if (modelImage.getWidth()!=width || modelImage.getHeight()!=height) {
-				modelImage = null;
-			}
-		}
-		
-		if (modelImage == null ) {
-//			modelImage = createVolatileImage(width, height);
-			modelImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			modelImageDirty = true;
-		}
-		
-		if (modelImageDirty) {
-			Graphics2D graphics2d = modelImage.createGraphics();
-			graphics2d.setColor(Color.black);
-			graphics2d.fillRect(0, 0, width, height);
-			ModelGraphics modelGraphics = new ModelGraphics(graphics2d, camera);
-			paintModel(modelGraphics, model);
-			graphics2d.dispose();
-			modelImageDirty = false;
-		}
-		
-		return modelImage;
-	}
 
 
-	private void paintModel(ModelGraphics modelGraphics, EditableModel model) {
+	@Override
+	protected void drawModelImage(ModelGraphics modelGraphics) {
 		for(EditableLayer layer : model) {
 			paintModelLayer(modelGraphics, layer);
 		}
@@ -268,8 +242,18 @@ public class EditorView extends ModelViewer {
 
 	private boolean onModelMouseEventForCreator(ModelMouseEvent modelEvent) {
 		switch(modelEvent.type) {
+			case MOVED :
+				creator.moveLocationTo(modelEvent.createModelPoint());
+				repaint();
+				break;
 			case CLICKED : {
-				if (creator.clicked(modelEvent)) {
+				if (modelEvent.event.getButton()==3) {
+					Editable editable = creator.createEditable();
+					currentLayer.addItem(editable);
+					creator = null;
+					repaintModel();
+					return true;
+				} else if (creator.clicked(modelEvent)) {
 					repaintModel();
 					return true;
 				}

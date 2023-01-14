@@ -196,8 +196,9 @@ public class ItemPolyLine implements Item {
 		public void contourBegin() {
 		}
 
+		
 		@Override
-		public void line(Point2D pointA, Point2D pointB) {
+		public void line(int dotIndexA, Point2D pointA, Point2D pointB) {
 			if (done.get()) {
 				return;
 			}

@@ -1,11 +1,10 @@
 package net.github.douwevos.cnc.model.value;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import net.github.douwevos.cnc.model.Editable;
-
-public class Layer {
+public class Layer implements Iterable<Item> {
 
 	private final List<Item> items;
 	
@@ -32,4 +31,9 @@ public class Layer {
 		return new Layer(newItems);
 	}
 
+	
+	@Override
+	public Iterator<Item> iterator() {
+		return items.iterator();
+	}
 }

@@ -29,12 +29,21 @@ public class ItemPolyLineController implements ItemController {
 
 	@Override
 	public void paint(ModelGraphics modelGraphics, EditableLayer layer, Editable item) {
+		paint(modelGraphics, layer, item, null, false);
+	}
+
+	
+	public void paint(ModelGraphics modelGraphics, EditableLayer layer, Editable item, Point2D editPoint, boolean editIsCurve) {
 		EditablePolyLine itemPolyline = (EditablePolyLine) item;
 		PolyForm polyForm = itemPolyline.getPolyForm();
-		
-		modelGraphics.colorDefault();
-		
 		GfxPolyOutput gfxPolyOutput = new GfxPolyOutput(modelGraphics, -1);
+		if (editPoint!=null) {
+			modelGraphics.colorSelection();
+			polyForm = polyForm.add(new PolyDot(editPoint.x, editPoint.y, editIsCurve));
+			polyForm.produce(gfxPolyOutput, 1d, 0, 0);
+			return;
+		}
+		modelGraphics.colorDefault();
 		polyForm.produce(gfxPolyOutput, 1d, 0, 0);
 		
 		modelGraphics.colorDot();

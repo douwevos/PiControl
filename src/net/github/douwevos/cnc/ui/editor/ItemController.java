@@ -14,6 +14,7 @@ public interface ItemController {
 	void paintHighlighted(Editable item, ItemGrabInfo<?> grabInfo, ModelGraphics modelGraphics);
 	void paintSelected(Editable item, ItemGrabInfo<?> selected, ModelGraphics modelGraphics);
 
+	
 	ItemGrabInfo<?> getGrabInfo(Editable item, ModelMouseEvent modelMouseEvent, double minSnapSize);
 	void addPopupItems(Editable item, ItemGrabInfo<?> grabInfo, JPopupMenu popupMenu, Point2D modelPoint);
 }

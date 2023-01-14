@@ -46,6 +46,11 @@ public class EditableModel implements Iterable<EditableLayer> {
 		return layers.iterator();
 	}
 	
+	
+	public EditableLayer layerAt(int index) {
+		return layers.get(index);
+	}
+	
 	public void addListener(Listener listener) {
 		modelChangeDispatcher.addListener(listener);
 	}
@@ -54,7 +59,7 @@ public class EditableModel implements Iterable<EditableLayer> {
 		modelChangeDispatcher.removeListener(listener);
 	}
 	
-	private Model snapshot() {
+	public Model snapshot() {
 		List<Layer> layers = new ArrayList<>(this.layers.size());
 		for(EditableLayer editabelLayer : this.layers) {
 			Layer layer = editabelLayer.snapshot();

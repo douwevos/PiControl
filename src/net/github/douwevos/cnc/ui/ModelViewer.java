@@ -1,6 +1,9 @@
 package net.github.douwevos.cnc.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -26,6 +30,10 @@ public abstract class ModelViewer extends JPanel implements MouseListener, Mouse
 	protected int dragY;
 	protected double dragTX;
 	protected double dragTY;
+
+	
+	protected volatile boolean modelImageDirty;
+	protected BufferedImage modelImage;
 
 	
 	public ModelViewer() {
@@ -50,7 +58,48 @@ public abstract class ModelViewer extends JPanel implements MouseListener, Mouse
 		addKeyListener(this);
 		addComponentListener(this);
 		updateViewCamera();
+		
+		if (isVisible()) {
+			componentShown(null);
+		}
 	}
+
+	
+	protected Image updateModelImage() {
+		int width = getWidth();
+		int height = getHeight();
+		if (modelImage != null) {
+//			if (modelImage.validate(getGraphicsConfiguration())==VolatileImage.IMAGE_INCOMPATIBLE) {
+//				modelImage = null;
+//			} else 
+			if (modelImage.getWidth()!=width || modelImage.getHeight()!=height) {
+				modelImage = null;
+			}
+		}
+		
+		if (modelImage == null ) {
+//			modelImage = createVolatileImage(width, height);
+			modelImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			modelImageDirty = true;
+		}
+		
+		if (modelImageDirty) {
+
+			Graphics2D graphics2d = modelImage.createGraphics();
+			graphics2d.setColor(Color.black);
+			graphics2d.fillRect(0, 0, width, height);
+			ModelGraphics modelGraphics = new ModelGraphics(graphics2d, camera);
+			drawModelImage(modelGraphics);
+			graphics2d.dispose();
+			
+			modelImageDirty = false;
+		}
+		
+		return modelImage;
+	}
+
+	
+	protected abstract void drawModelImage(ModelGraphics modelGraphics);
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
@@ -181,6 +230,7 @@ public abstract class ModelViewer extends JPanel implements MouseListener, Mouse
 
 	protected void updateViewCamera() {
 		camera.refit(getModelBounds(), getViewDimension());
+		modelImageDirty = true;
 	}
 		
 }
