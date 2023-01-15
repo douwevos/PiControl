@@ -13,6 +13,7 @@ public class ModelGraphics {
 	private Color COLOR_DOT = new Color(0xAA, 0xAA, 0xAA);
 	private Color COLOR_SELECTION = new Color(0, 0xFF, 0);
 	private Color COLOR_HIGHLIGHT = new Color(0xFF, 0xFF, 0);
+	private Color COLOR_FAINT = new Color(0x44, 0x44, 0x44);
 	
 	Graphics2D gfx;
 	Camera camera;
@@ -49,6 +50,12 @@ public class ModelGraphics {
 		gfx.setColor(COLOR_HIGHLIGHT);
 		return COLOR_HIGHLIGHT;
 	}
+	
+	public Color faintDefault() {
+		gfx.setColor(COLOR_FAINT);
+		return COLOR_FAINT;
+	}
+
 
 	public void drawRectangle(Bounds2D rectangle) {
 		Point2D vcLeftBottom = camera.toViewCoords(rectangle.left, rectangle.bottom);
@@ -98,5 +105,6 @@ public class ModelGraphics {
 		int y1 = (int) vcB.y;
 		gfx.drawLine(x0, y0, x1, y1);
 	}
+
 
 }

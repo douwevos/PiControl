@@ -11,6 +11,7 @@ public class PlanViewModel {
 	EditableModel editableModel;
 	
 	ContourLayer allContours;
+	ContourLayer ghostLayer;
 	
 	public PlanViewModel(EditableModel editableModel) {
 		this.editableModel = editableModel;
@@ -26,6 +27,9 @@ public class PlanViewModel {
 		return snapshot;
 	}
 
+	public void setGhostLayer(ContourLayer ghostLayer) {
+		this.ghostLayer = ghostLayer;
+	}
 
 	public void setPlanPath(ContourLayer allContours) {
 		this.allContours = allContours;

@@ -65,13 +65,8 @@ public class EditableModel implements Iterable<EditableLayer> {
 			Layer layer = editabelLayer.snapshot();
 			layers.add(layer);
 		}
-		Model result = this.build;
-		if (result != null) {
-			result = result.setLayers(layers);
-		} else {
-			result = new Model(layers);
-		}
-		return result;
+		build = build==null ? new Model(layers) : build.setLayers(layers);
+		return build;
 	}
 	
 	public interface Listener {

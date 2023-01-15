@@ -22,7 +22,7 @@ public class EditablePolyLine extends Editable {
 
 	@Override
 	protected Item snapshot() {
-		if (build != null && build.getPolyForm()!=polyForm && build.getDepth()!=depth) {
+		if (build != null && (build.getPolyForm()!=polyForm || build.getDepth()!=depth)) {
 			build = null;
 		}
 		if (build == null) {

@@ -22,8 +22,8 @@ public class EditableLayer implements Iterable<Editable> {
 			Item item = editable.snapshot();
 			items.add(item);
 		}
-		Layer result = build;
-		return result == null ? new Layer(items) : result.setItems(items);
+		build = build == null ? new Layer(items) : build.setItems(items);
+		return build;
 	}
 
 	

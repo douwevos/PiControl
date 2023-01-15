@@ -76,7 +76,6 @@ public class EditorPerspective implements CncPerspective {
 
 	private CncUIButton createSelectButton() {
 		Runnable actionRun = () -> {
-//			setSelectMode();
 			startPolyLine();
 		};
 		return new CncUIButton(loadImage("./src/select.png"), actionRun, BUTTON_HEIGHT);
@@ -86,24 +85,19 @@ public class EditorPerspective implements CncPerspective {
 	@Override
 	public void show(CncPerspectiveBoard perspectiveBoard) {
 		perspectiveBoard.setContentPanel(editorView);
-//		perspectiveBoard.setPropertiesPanel(propertyPanel);
 		this.perspectiveBoard = perspectiveBoard;
 		selectionPropertiesList.setPerspectiveBoard(perspectiveBoard);
 		
 		CncRuntimeContext runtimeContext = perspectiveBoard.getRuntimeContext();
-		HolerModel holerModel = runtimeContext.getHolerModel();
 		
 		editorView.setModel(runtimeContext.getEditableModel());
-//		holerDesignView.setHolerModel(holerModel);
 		
 	}
 
 	@Override
 	public void hide() {
-//		perspectiveBoard.setPropertiesPanel(null);
 		perspectiveBoard.setContentPanel(null);
 		selectionPropertiesList.setPerspectiveBoard(null);
-//		holerDesignView.setHolerModel(null);
 	}
 
 	public Image loadImage(String name) {

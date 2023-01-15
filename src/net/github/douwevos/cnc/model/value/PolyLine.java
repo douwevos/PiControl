@@ -36,9 +36,6 @@ public class PolyLine implements Item {
 		PolyFormToContourOutput fracPolyOutput = new PolyFormToContourOutput(); 
 		polyForm.produce(fracPolyOutput, 1d, 0, 0);
 		Contour contour = fracPolyOutput.contour;
-//		for(PolyDot dot : polyForm) {
-//			contour.add(Point2D.of(dot.x, dot.y));
-//		}
 		contour.setClosed(true);
 		contourLayer.add(contour);
 	}

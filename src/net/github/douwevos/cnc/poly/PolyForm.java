@@ -257,7 +257,7 @@ public class PolyForm implements Iterable<PolyDot> {
 	List<XY> bezierCurve(double x[] , double y[]) {
 	    double xu = 0.0 , yu = 0.0 , u = 0.0 ;
 	    List<XY> result = new ArrayList<>();
-	    for(u = 0.0 ; u <= 1.00001 ; u += 0.0001) {
+	    for(u = 0.0 ; u <= 1.001 ; u += 0.01) {
 	    	double v = 1.0 - u;
 	    	double powMU2 = v*v;
 	        double powMU3 = powMU2*v;
