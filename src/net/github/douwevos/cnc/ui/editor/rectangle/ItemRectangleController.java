@@ -15,9 +15,9 @@ import net.github.douwevos.cnc.ui.ModelGraphics;
 import net.github.douwevos.cnc.ui.ModelMouseEvent;
 import net.github.douwevos.cnc.ui.editor.ItemController;
 import net.github.douwevos.cnc.ui.editor.ItemGrabInfo;
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.Line2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.Line2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class ItemRectangleController implements ItemController {
 

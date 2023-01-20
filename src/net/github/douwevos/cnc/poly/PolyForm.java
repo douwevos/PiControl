@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.FracPoint2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.FracPoint2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class PolyForm implements Iterable<PolyDot> {
 

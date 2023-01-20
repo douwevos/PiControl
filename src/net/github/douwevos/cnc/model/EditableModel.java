@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.github.douwevos.cnc.model.value.Layer;
 import net.github.douwevos.cnc.model.value.Model;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class EditableModel implements Iterable<EditableLayer> {
 

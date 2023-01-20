@@ -4,7 +4,7 @@ import net.github.douwevos.cnc.model.Editable;
 import net.github.douwevos.cnc.model.EditableLayer;
 import net.github.douwevos.cnc.ui.ModelGraphics;
 import net.github.douwevos.cnc.ui.ModelMouseEvent;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public interface EditableCreator {
 

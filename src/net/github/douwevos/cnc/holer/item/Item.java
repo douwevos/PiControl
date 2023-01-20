@@ -10,7 +10,7 @@ import net.github.douwevos.cnc.holer.design.SelectionModel;
 import net.github.douwevos.cnc.holer.design.ViewCamera;
 import net.github.douwevos.cnc.layer.Layer;
 import net.github.douwevos.cnc.layer.LayerDescription;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public interface Item {
 

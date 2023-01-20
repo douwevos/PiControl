@@ -28,7 +28,7 @@ import net.github.douwevos.cnc.type.Distance;
 import net.github.douwevos.cnc.ui.controller.KeyEventType;
 import net.github.douwevos.cnc.ui.controller.MouseEventType;
 import net.github.douwevos.cnc.ui.controller.UiController;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class DesignView extends JPanel implements MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener, CameraListener {
 

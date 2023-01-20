@@ -3,7 +3,7 @@ package net.github.douwevos.cnc.layer;
 import java.util.Arrays;
 import java.util.List;
 
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class OnOffArea {
 

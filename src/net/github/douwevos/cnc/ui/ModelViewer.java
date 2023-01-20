@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 
 import net.github.douwevos.cnc.ui.Camera.CameraListener;
 import net.github.douwevos.cnc.ui.controller.MouseEventType;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 
 public abstract class ModelViewer extends JPanel implements MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener, CameraListener {

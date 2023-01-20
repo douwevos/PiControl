@@ -1,12 +1,11 @@
 package net.github.douwevos.cnc.model.value;
 
-import net.github.douwevos.cnc.poly.PolyDot;
 import net.github.douwevos.cnc.poly.PolyForm;
 import net.github.douwevos.cnc.poly.PolyForm.FracPolyOutput;
-import net.github.douwevos.justflat.contour.Contour;
-import net.github.douwevos.justflat.contour.ContourLayer;
-import net.github.douwevos.justflat.types.values.FracPoint2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.shape.PolygonLayer;
+import net.github.douwevos.justflat.values.FracPoint2D;
+import net.github.douwevos.justflat.values.Point2D;
+import net.github.douwevos.justflat.values.shape.Polygon;
 
 public class PolyLine implements Item {
 
@@ -28,23 +27,23 @@ public class PolyLine implements Item {
 	
 	
 	@Override
-	public void writeToContourLayer(ContourLayer contourLayer, long atDepth) {
+	public void writeToContourLayer(PolygonLayer polygonLayer, long atDepth) {
 		if (atDepth > depth) {
 			return;
 		}
 
 		PolyFormToContourOutput fracPolyOutput = new PolyFormToContourOutput(); 
 		polyForm.produce(fracPolyOutput, 1d, 0, 0);
-		Contour contour = fracPolyOutput.contour;
-		contour.setClosed(true);
-		contourLayer.add(contour);
+		Polygon polygon = fracPolyOutput.polygon;
+		polygon.setClosed(true);
+		polygonLayer.add(polygon);
 	}
 	
 	
 	
 	private static class PolyFormToContourOutput implements FracPolyOutput {
 
-		public Contour contour = new Contour();
+		public Polygon polygon = new Polygon();
 		
 		@Override
 		public void contourBegin() {
@@ -61,11 +60,11 @@ public class PolyLine implements Item {
 		public void line(int dotIndexA, FracPoint2D pointA, FracPoint2D pointB) {
 			Point2D nfa = pointA.toNonFractional();
 			Point2D nfb = pointB.toNonFractional();
-			if (contour.isEmpty() || !contour.getLast().equals(nfa)) {
-				contour.add(nfa);
+			if (polygon.isEmpty() || !polygon.getLast().equals(nfa)) {
+				polygon.add(nfa);
 			}
-			if (contour.isEmpty() || !contour.getLast().equals(nfb)) {
-				contour.add(nfb);
+			if (polygon.isEmpty() || !polygon.getLast().equals(nfb)) {
+				polygon.add(nfb);
 			}
 		}
 	}

@@ -15,14 +15,14 @@ import net.github.douwevos.cnc.model.value.Layer;
 import net.github.douwevos.cnc.model.value.Model;
 import net.github.douwevos.cnc.ui.ModelGraphics;
 import net.github.douwevos.cnc.ui.ModelViewer;
-import net.github.douwevos.justflat.contour.Contour;
-import net.github.douwevos.justflat.contour.ContourLayer;
-import net.github.douwevos.justflat.contour.ContourLayerOverlapCutter;
-import net.github.douwevos.justflat.contour.ContourLayerResolutionReducer;
-import net.github.douwevos.justflat.contour.scaler.ContourLayerScaler;
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.Line2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.shape.PolygonLayer;
+import net.github.douwevos.justflat.shape.PolygonLayerNonSimpleToSimpleSplitter;
+import net.github.douwevos.justflat.shape.PolygonLayerResolutionReducer;
+import net.github.douwevos.justflat.shape.scaler.PolygonLayerScaler;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.Line2D;
+import net.github.douwevos.justflat.values.Point2D;
+import net.github.douwevos.justflat.values.shape.Polygon;
 
 public class PlanView extends ModelViewer implements Runnable {
 
@@ -51,15 +51,15 @@ public class PlanView extends ModelViewer implements Runnable {
 
 	@Override
 	protected void drawModelImage(ModelGraphics modelGraphics) {
-		ContourLayer ghostLayer = planViewModel.ghostLayer;
+		PolygonLayer ghostLayer = planViewModel.ghostLayer;
 		if (ghostLayer != null) {
-			for(Contour contour : ghostLayer) {
+			for(Polygon contour : ghostLayer) {
 				drawContour(modelGraphics, contour, true);
 			}
 		}
-		ContourLayer allContours = planViewModel.allContours;
+		PolygonLayer allContours = planViewModel.allContours;
 		if (allContours != null) {
-			for(Contour contour : allContours) {
+			for(Polygon contour : allContours) {
 				drawContour(modelGraphics, contour, false);
 			}
 		}
@@ -67,7 +67,7 @@ public class PlanView extends ModelViewer implements Runnable {
 	}
 	
 	
-	private void drawContour(ModelGraphics modelGraphics, Contour contour, boolean ghost) {
+	private void drawContour(ModelGraphics modelGraphics, Polygon contour, boolean ghost) {
 		if (ghost) {
 			modelGraphics.faintDefault();
 		} else { 
@@ -129,7 +129,7 @@ public class PlanView extends ModelViewer implements Runnable {
 			
 			if (planViewModel2!=null && planViewModel2.getAllContours() == null) {
 	
-				ContourLayer contourLayer = new ContourLayer(10, 10);
+				PolygonLayer contourLayer = new PolygonLayer();
 				
 				Model model = planViewModel2.getSnapshot();
 				Layer layer = model.layerAt(0);
@@ -137,7 +137,7 @@ public class PlanView extends ModelViewer implements Runnable {
 					item.writeToContourLayer(contourLayer, 0);
 				}
 				
-				ContourLayer allContours =  new ContourLayer(10, 10);
+				PolygonLayer allContours =  new PolygonLayer();
 				
 //				for(Contour contour : contourLayer.contours) {
 //					allContours.add(contour);
@@ -149,12 +149,12 @@ public class PlanView extends ModelViewer implements Runnable {
 				int discSize = 800;
 				int discSizeSq = discSize*discSize;
 
-				
-				ContourLayerResolutionReducer resolutionReducer = new ContourLayerResolutionReducer();
-				ContourLayer reducedResolution = resolutionReducer.reduceResolution(contourLayer, discSizeSq, 1);
-				
-				ContourLayerOverlapCutter cutter = new ContourLayerOverlapCutter();
-				ContourLayer cutted = cutter.scale(reducedResolution, true);
+
+				PolygonLayerResolutionReducer resolutionReducer = new PolygonLayerResolutionReducer();
+				PolygonLayer reducedResolution = resolutionReducer.reduceResolution(contourLayer, discSizeSq, 1);
+
+				PolygonLayerNonSimpleToSimpleSplitter splitter = new PolygonLayerNonSimpleToSimpleSplitter();
+				PolygonLayer cutted = splitter.createSimplePolygonLayer(reducedResolution);
 
 				
 				
@@ -164,14 +164,14 @@ public class PlanView extends ModelViewer implements Runnable {
 
 				
 				for(int idx=1; idx<100; idx++) {
-					ContourLayer duplicate = cutted.duplicate();
-					ContourLayerScaler contourLayerScaler = new ContourLayerScaler();
-					ContourLayer scaled = contourLayerScaler.scale(duplicate, idx*toolDiameter, false);
+					PolygonLayer duplicate = cutted.duplicate();
+					PolygonLayerScaler contourLayerScaler = new PolygonLayerScaler();
+					PolygonLayer scaled = contourLayerScaler.scale(duplicate, idx*toolDiameter, false);
 					if (scaled.isEmpty()) {
 						break;
 					}
 					System.err.println("scaled.count="+scaled.count());
-					for(Contour contour : scaled.contours) {
+					for(Polygon contour : scaled) {
 						allContours.add(contour);
 					}
 				}

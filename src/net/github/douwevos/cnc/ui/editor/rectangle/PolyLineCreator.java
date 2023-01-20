@@ -11,7 +11,7 @@ import net.github.douwevos.cnc.poly.PolyDot;
 import net.github.douwevos.cnc.poly.PolyForm;
 import net.github.douwevos.cnc.ui.ModelGraphics;
 import net.github.douwevos.cnc.ui.ModelMouseEvent;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class PolyLineCreator implements EditableCreator {
 

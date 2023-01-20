@@ -3,9 +3,9 @@ package net.github.douwevos.cnc.ui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.FracPoint2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.FracPoint2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class ModelGraphics {
 

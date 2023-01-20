@@ -18,7 +18,7 @@ import net.github.douwevos.cnc.layer.LayerLine;
 import net.github.douwevos.cnc.layer.StartStop;
 import net.github.douwevos.cnc.layer.StartStopLayer;
 import net.github.douwevos.cnc.tool.Tool;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class LayeredCncContext {
 	private static final boolean ONLY_TEST = true;

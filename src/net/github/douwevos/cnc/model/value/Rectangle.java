@@ -1,9 +1,9 @@
 package net.github.douwevos.cnc.model.value;
 
-import net.github.douwevos.justflat.contour.Contour;
-import net.github.douwevos.justflat.contour.ContourLayer;
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.Point2D;
+import net.github.douwevos.justflat.values.shape.Polygon;
+import net.github.douwevos.justflat.shape.PolygonLayer;
 
 public class Rectangle implements Item {
 	
@@ -26,7 +26,7 @@ public class Rectangle implements Item {
 	
 	
 	@Override
-	public void writeToContourLayer(ContourLayer contourLayer, long atDepth) {
+	public void writeToContourLayer(PolygonLayer polygonLayer, long atDepth) {
 		if (atDepth > depth) {
 			return;
 		}
@@ -35,13 +35,13 @@ public class Rectangle implements Item {
 		long y0 = bounds.bottom;
 		long x1 = bounds.right;
 		long y1 = bounds.top;
-		Contour contour = new Contour();
-		contour.add(Point2D.of(x0, y0));
-		contour.add(Point2D.of(x0, y1));
-		contour.add(Point2D.of(x1, y1));
-		contour.add(Point2D.of(x1, y0));
-		contour.setClosed(true);
-		contourLayer.add(contour);
+		Polygon polygon = new Polygon();
+		polygon.add(Point2D.of(x0, y0));
+		polygon.add(Point2D.of(x0, y1));
+		polygon.add(Point2D.of(x1, y1));
+		polygon.add(Point2D.of(x1, y0));
+		polygon.setClosed(true);
+		polygonLayer.add(polygon);
 	}
 	
 }

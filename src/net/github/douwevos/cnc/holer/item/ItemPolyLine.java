@@ -24,8 +24,8 @@ import net.github.douwevos.cnc.poly.PolyForm.PolyOutput;
 import net.github.douwevos.cnc.poly.PolyFormPainter;
 import net.github.douwevos.cnc.tool.Tool;
 import net.github.douwevos.cnc.type.Distance;
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class ItemPolyLine implements Item {
 
@@ -406,14 +406,14 @@ public class ItemPolyLine implements Item {
 			return dot.y;
 		}
 
-		@Override
-		public void setLocation(long x, long y) {
-			ItemPolyLine ipl = (ItemPolyLine) item;
-			int pointIndex = ipl.polyForm.indexOf(dot);
-			dot = new PolyDot(x, y, dot.isCurve);
-			ipl.polyForm.set(pointIndex, dot);
-			
-		}
+//		@Override
+//		public void setLocation(long x, long y) {
+//			ItemPolyLine ipl = (ItemPolyLine) item;
+//			int pointIndex = ipl.polyForm.indexOf(dot);
+//			dot = new PolyDot(x, y, dot.isCurve);
+//			ipl.polyForm.set(pointIndex, dot);
+//			
+//		}
 
 		@Override
 		public void setX(long x) {

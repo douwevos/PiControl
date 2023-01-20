@@ -22,8 +22,8 @@ import net.github.douwevos.cnc.ui.ModelViewer;
 import net.github.douwevos.cnc.ui.editor.rectangle.EditableCreator;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemPolyLineController;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemRectangleController;
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 @SuppressWarnings("serial")
 public class EditorView extends ModelViewer {

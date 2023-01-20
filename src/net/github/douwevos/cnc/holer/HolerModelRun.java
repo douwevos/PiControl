@@ -18,7 +18,7 @@ import net.github.douwevos.cnc.run.Chain;
 import net.github.douwevos.cnc.run.LayeredCncContext;
 import net.github.douwevos.cnc.tool.Tool;
 import net.github.douwevos.cnc.type.Distance;
-import net.github.douwevos.justflat.contour.ContourLayer;
+import net.github.douwevos.justflat.shape.PolygonLayer;
 
 public class HolerModelRun implements Runnable {
 
@@ -105,8 +105,8 @@ public class HolerModelRun implements Runnable {
 	public static class Layers {
 		
 		public long depth;
-		public ContourLayer shapeLayer;
-		public ContourLayer fillLayer;
+		public PolygonLayer shapeLayer;
+		public PolygonLayer fillLayer;
 	}
 	
 	

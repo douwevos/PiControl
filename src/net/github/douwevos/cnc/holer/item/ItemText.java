@@ -24,7 +24,7 @@ import net.github.douwevos.cnc.ttf.TextLayoutPainter;
 import net.github.douwevos.cnc.ttf.TextLayoutToCncLayer;
 import net.github.douwevos.justflat.ttf.format.Ttf;
 import net.github.douwevos.justflat.ttf.reader.TrueTypeFontParser;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class ItemText implements Item {
 

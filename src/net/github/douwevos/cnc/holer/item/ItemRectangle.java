@@ -11,7 +11,7 @@ import net.github.douwevos.cnc.holer.ItemGrabInfo;
 import net.github.douwevos.cnc.holer.design.SelectionModel;
 import net.github.douwevos.cnc.holer.design.ViewCamera;
 import net.github.douwevos.cnc.tool.Tool;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class ItemRectangle implements Item {
 

@@ -11,7 +11,7 @@ import net.github.douwevos.cnc.model.EditablePolyLine;
 import net.github.douwevos.cnc.model.EditableRectangle;
 import net.github.douwevos.cnc.poly.PolyDot;
 import net.github.douwevos.cnc.poly.PolyForm;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class CncRuntimeContext {
 

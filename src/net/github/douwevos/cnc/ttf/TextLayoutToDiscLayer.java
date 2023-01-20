@@ -1,8 +1,8 @@
 package net.github.douwevos.cnc.ttf;
 
 import net.github.douwevos.cnc.layer.disc.DiscLayer;
-import net.github.douwevos.justflat.contour.Contour;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Point2D;
+import net.github.douwevos.justflat.values.shape.Polygon;
 
 public class TextLayoutToDiscLayer {
 
@@ -31,7 +31,7 @@ public class TextLayoutToDiscLayer {
 	private static class LayerGlyphOutput implements TextLayoutGlyph.GlyphOutput {
 
 		private final DiscLayer layer;
-		Contour contour;
+		Polygon contour;
 		boolean first = true;
 		
 		public LayerGlyphOutput(DiscLayer layer) {
@@ -52,7 +52,7 @@ public class TextLayoutToDiscLayer {
 
 		@Override
 		public void contourBegin() {
-			contour = new Contour();
+			contour = new Polygon();
 			layer.add(contour);
 		}
 

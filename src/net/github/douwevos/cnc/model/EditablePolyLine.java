@@ -5,7 +5,7 @@ import java.util.Objects;
 import net.github.douwevos.cnc.model.value.Item;
 import net.github.douwevos.cnc.model.value.PolyLine;
 import net.github.douwevos.cnc.poly.PolyForm;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class EditablePolyLine extends Editable {
 

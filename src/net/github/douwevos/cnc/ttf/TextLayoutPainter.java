@@ -2,7 +2,7 @@ package net.github.douwevos.cnc.ttf;
 
 import java.awt.Graphics2D;
 
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 
 public class TextLayoutPainter {

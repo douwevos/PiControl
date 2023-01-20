@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 
 import net.github.douwevos.cnc.ui.controller.MouseEventType;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class ModelMouseEvent {
 

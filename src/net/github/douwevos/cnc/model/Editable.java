@@ -1,7 +1,7 @@
 package net.github.douwevos.cnc.model;
 
 import net.github.douwevos.cnc.model.value.Item;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public abstract class Editable {
 	

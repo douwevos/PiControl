@@ -15,7 +15,7 @@ import net.github.douwevos.cnc.layer.LayerDescription;
 import net.github.douwevos.cnc.layer.StartStopLayer;
 import net.github.douwevos.cnc.tool.Tool;
 import net.github.douwevos.cnc.type.Distance;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class ItemBoreHole implements Item {
 	

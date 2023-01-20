@@ -2,16 +2,16 @@ package net.github.douwevos.cnc.ui.plan;
 
 import net.github.douwevos.cnc.model.EditableModel;
 import net.github.douwevos.cnc.model.value.Model;
-import net.github.douwevos.justflat.contour.ContourLayer;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.shape.PolygonLayer;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class PlanViewModel {
 	
 	Model snapshot;
 	EditableModel editableModel;
 	
-	ContourLayer allContours;
-	ContourLayer ghostLayer;
+	PolygonLayer allContours;
+	PolygonLayer ghostLayer;
 	
 	public PlanViewModel(EditableModel editableModel) {
 		this.editableModel = editableModel;
@@ -27,15 +27,15 @@ public class PlanViewModel {
 		return snapshot;
 	}
 
-	public void setGhostLayer(ContourLayer ghostLayer) {
+	public void setGhostLayer(PolygonLayer ghostLayer) {
 		this.ghostLayer = ghostLayer;
 	}
 
-	public void setPlanPath(ContourLayer allContours) {
+	public void setPlanPath(PolygonLayer allContours) {
 		this.allContours = allContours;
 	}
 	
-	public ContourLayer getAllContours() {
+	public PolygonLayer getAllContours() {
 		return allContours;
 	}
 

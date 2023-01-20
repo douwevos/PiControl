@@ -5,7 +5,7 @@ import java.util.List;
 import net.github.douwevos.cnc.layer.Layer;
 import net.github.douwevos.cnc.layer.OnOffArea;
 import net.github.douwevos.cnc.layer.StartStop;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class TextLayoutToCncLayer {
 

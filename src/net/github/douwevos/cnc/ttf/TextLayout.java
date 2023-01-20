@@ -9,8 +9,8 @@ import net.github.douwevos.justflat.ttf.format.TtfCharacterMap;
 import net.github.douwevos.justflat.ttf.format.TtfGlyphData;
 import net.github.douwevos.justflat.ttf.format.TtfGlyphData.GlyphDefinition;
 import net.github.douwevos.justflat.ttf.format.TtfGlyphData.GlyphDot;
+import net.github.douwevos.justflat.values.Bounds2D;
 import net.github.douwevos.justflat.ttf.format.TtfHorizontalHeader;
-import net.github.douwevos.justflat.types.values.Bounds2D;
 
 public class TextLayout implements Iterable<TextLayoutGlyph> {
 

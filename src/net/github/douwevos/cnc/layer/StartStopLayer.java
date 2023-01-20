@@ -3,7 +3,7 @@ package net.github.douwevos.cnc.layer;
 import java.util.List;
 
 import net.github.douwevos.cnc.run.CircleCoords;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class StartStopLayer implements Layer {
 

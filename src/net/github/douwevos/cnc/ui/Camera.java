@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 import net.github.douwevos.cnc.holer.design.CameraLockType;
-import net.github.douwevos.justflat.types.values.Bounds2D;
-import net.github.douwevos.justflat.types.values.FracPoint2D;
-import net.github.douwevos.justflat.types.values.Point2D;
+import net.github.douwevos.justflat.values.Bounds2D;
+import net.github.douwevos.justflat.values.FracPoint2D;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class Camera {
 	

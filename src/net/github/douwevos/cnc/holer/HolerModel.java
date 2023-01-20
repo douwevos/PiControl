@@ -24,7 +24,7 @@ import net.github.douwevos.cnc.tool.FraseTool;
 import net.github.douwevos.cnc.tool.Tool;
 import net.github.douwevos.cnc.type.Distance;
 import net.github.douwevos.cnc.type.DistanceUnit;
-import net.github.douwevos.justflat.types.values.Bounds2D;
+import net.github.douwevos.justflat.values.Bounds2D;
 
 public class HolerModel implements Iterable<Item> {
 
