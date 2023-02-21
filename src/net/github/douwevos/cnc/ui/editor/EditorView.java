@@ -1,12 +1,10 @@
 package net.github.douwevos.cnc.ui.editor;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -22,6 +20,7 @@ import net.github.douwevos.cnc.ui.ModelViewer;
 import net.github.douwevos.cnc.ui.editor.rectangle.EditableCreator;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemPolyLineController;
 import net.github.douwevos.cnc.ui.editor.rectangle.ItemRectangleController;
+import net.github.douwevos.cnc.ui.editor.rectangle.ItemTextController;
 import net.github.douwevos.justflat.values.Bounds2D;
 import net.github.douwevos.justflat.values.Point2D;
 
@@ -32,6 +31,7 @@ public class EditorView extends ModelViewer {
 	static {
 		controllers.put(ItemType.RECTANGLE, new ItemRectangleController());
 		controllers.put(ItemType.POLYLINE, new ItemPolyLineController());
+		controllers.put(ItemType.TEXT, new ItemTextController());
 	}
 	
 	private boolean didDrag = false;
@@ -191,6 +191,7 @@ public class EditorView extends ModelViewer {
 				ItemGrabInfo<?> grabInfoP = resolveItemGrabInfo(modelEvent);
 				if (grabInfoP == null) {
 					selectionModel.clear();
+					selectionModel.startSelectArea(modelEvent.createModelPoint());
 					break;
 				}
 				int modifiersEx = modelEvent.event.getModifiersEx();
@@ -212,6 +213,7 @@ public class EditorView extends ModelViewer {
 					repaintModel();
 					return true;
 				}
+				
 			} break;
 			case RELEASED : {
 				ItemGrabInfo<?> grabInfoP = resolveItemGrabInfo(modelEvent);
@@ -230,7 +232,9 @@ public class EditorView extends ModelViewer {
 			case CLICKED : {
 				if (modelEvent.event.getButton() == 3) {
 					Point2D modelClickPoint = new Point2D(Math.round(modelEvent.modelX), Math.round(modelEvent.modelY));
-					showPopupMenu(modelEvent.event.getX(), modelEvent.event.getY(), modelClickPoint);
+					if (showPopupMenu(modelEvent.event.getX(), modelEvent.event.getY(), modelClickPoint)) {
+						return true;
+					}
 				}
 			}
 			default :
@@ -265,7 +269,7 @@ public class EditorView extends ModelViewer {
 
 
 
-	private void showPopupMenu(int x, int y, Point2D modelPoint) {
+	private boolean showPopupMenu(int x, int y, Point2D modelPoint) {
 
 		JPopupMenu p = new JPopupMenu();
 		
@@ -303,7 +307,11 @@ public class EditorView extends ModelViewer {
 //			p.add(actDummy);
 //		}
 //		
+		if (p.getComponentCount() == 0) {
+			return false;
+		}
 		p.show(this, x, y);
+		return true;
 	}
 
 

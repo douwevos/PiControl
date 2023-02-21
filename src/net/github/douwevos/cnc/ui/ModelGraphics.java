@@ -86,6 +86,19 @@ public class ModelGraphics {
 		}
 	}
 
+	public void drawCircle(FracPoint2D center, long radius, boolean filled) {
+		Point2D vcCenter = camera.toViewCoords(center).toNonFractional();
+		int viewRadius = (int) camera.toViewSize(radius);
+		int xc = (int) vcCenter.x;
+		int yc = (int) vcCenter.y;
+		int d = viewRadius*2;
+		if (filled) {
+			gfx.fillArc(xc-viewRadius, yc-viewRadius, d, d, 0,360);
+		} else {
+			gfx.drawArc(xc-viewRadius, yc-viewRadius, d, d, 0,360);
+		}
+	}
+
 	public void drawLine(Point2D pointA, Point2D pointB) {
 		Point2D vcA = camera.toViewCoords(pointA);
 		Point2D vcB = camera.toViewCoords(pointB);

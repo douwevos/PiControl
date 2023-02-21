@@ -3,7 +3,6 @@ package net.github.douwevos.cnc.model;
 import java.util.Objects;
 
 import net.github.douwevos.cnc.model.value.Item;
-import net.github.douwevos.cnc.model.value.PolyLine;
 import net.github.douwevos.cnc.model.value.Rectangle;
 import net.github.douwevos.justflat.values.Bounds2D;
 
@@ -42,6 +41,7 @@ public class EditableRectangle extends Editable {
 			return;
 		}
 		this.bounds = bounds;
+		build = null;
 		dispatchModelChanged();
 	}
 	

@@ -14,9 +14,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 import javax.swing.JPanel;
 
+import net.github.douwevos.cnc.holer.design.CameraLockType;
 import net.github.douwevos.cnc.ui.Camera.CameraListener;
 import net.github.douwevos.cnc.ui.controller.MouseEventType;
 import net.github.douwevos.justflat.values.Bounds2D;
@@ -26,6 +28,7 @@ public abstract class ModelViewer extends JPanel implements MouseListener, Mouse
 
 	protected Camera camera = new Camera();
 
+	protected int pressedButton;
 	protected int dragX;
 	protected int dragY;
 	protected double dragTX;
@@ -33,7 +36,8 @@ public abstract class ModelViewer extends JPanel implements MouseListener, Mouse
 
 	
 	protected volatile boolean modelImageDirty;
-	protected BufferedImage modelImage;
+//	protected BufferedImage modelImage;
+	protected VolatileImage modelImage;
 
 	
 	public ModelViewer() {
@@ -77,9 +81,9 @@ public abstract class ModelViewer extends JPanel implements MouseListener, Mouse
 			}
 		}
 		
-		if (modelImage == null ) {
-//			modelImage = createVolatileImage(width, height);
-			modelImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		if (modelImage == null || modelImage.validate(getGraphicsConfiguration())==VolatileImage.IMAGE_INCOMPATIBLE) {
+			modelImage = createVolatileImage(width, height);
+//			modelImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 			modelImageDirty = true;
 		}
 		
@@ -127,19 +131,28 @@ public abstract class ModelViewer extends JPanel implements MouseListener, Mouse
 			}
 		} else if (modelEvent.type == MouseEventType.PRESSED) {
 			MouseEvent event = modelEvent.event;
+			System.out.println("event.getButton()="+event.getButton());
 			dragX = event.getX();
 			dragY = event.getY();
 			dragTX = camera.getTranslateX();
 			dragTY = camera.getTranslateY();
+			pressedButton = event.getButton();
 		} else if (modelEvent.type == MouseEventType.DRAGGED) {
 			MouseEvent event = modelEvent.event;
-			int mouseX = event.getX();
-			int mouseY = event.getY();
-			double cameraZoom = camera.getZoom();
-			double nx = dragTX + (dragX - mouseX)*cameraZoom;
-			double ny = dragTY + (mouseY - dragY)*cameraZoom;
-
-			camera.setTranslate(nx,ny);
+			if (pressedButton == 3) {
+				int mouseX = event.getX();
+				int mouseY = event.getY();
+				double cameraZoom = camera.getZoom();
+				double nx = dragTX + (dragX - mouseX)*cameraZoom;
+				double ny = dragTY + (mouseY - dragY)*cameraZoom;
+				camera.setTranslate(nx,ny);
+			}
+		} else if (modelEvent.type == MouseEventType.CLICKED) {
+			if (pressedButton == 3 && modelEvent.event.getClickCount()>1) {
+				camera.setLockType(CameraLockType.FIT_MODEL);
+				updateViewCamera();
+				return true;
+			}
 			
 		}
 		return false;

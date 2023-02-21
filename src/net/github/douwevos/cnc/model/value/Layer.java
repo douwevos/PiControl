@@ -3,6 +3,7 @@ package net.github.douwevos.cnc.model.value;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Layer implements Iterable<Item> {
 
@@ -35,5 +36,9 @@ public class Layer implements Iterable<Item> {
 	@Override
 	public Iterator<Item> iterator() {
 		return items.iterator();
+	}
+	
+	public Stream<Item> streamItems() {
+		return items.stream();
 	}
 }

@@ -70,7 +70,7 @@ public class DiscLayer extends PolygonLayer implements Layer {
 			long newX = Math.round(nx-dx);
 			long newY = Math.round(ny-dy);
 			Point2D moved = Point2D.of(newX, newY);
-			selected.contour.setDotAt(selected.dotIndex, moved);
+//			selected.contour.setDotAt(selected.dotIndex, moved);
 			
 		}
 		return true;

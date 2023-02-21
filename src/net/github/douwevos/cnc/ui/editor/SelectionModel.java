@@ -7,6 +7,7 @@ import java.util.Objects;
 import net.github.douwevos.cnc.model.EditableModel;
 import net.github.douwevos.cnc.model.value.Model;
 import net.github.douwevos.cnc.ui.Camera;
+import net.github.douwevos.justflat.values.Point2D;
 
 public class SelectionModel {
 
@@ -17,6 +18,8 @@ public class SelectionModel {
 	
 	private List<Listener> listeners = new ArrayList<>();
 	
+	
+	private Point2D modelPointStart;
 	
 	public ItemGrabInfo<?> getHighlight() {
 		return highlight;
@@ -128,6 +131,10 @@ public class SelectionModel {
 		if (didChange) {
 			notifyListeners();
 		}
+	}
+
+	public void startSelectArea(Point2D modelPointStart) {
+		this.modelPointStart = modelPointStart;
 	}
 	
 }

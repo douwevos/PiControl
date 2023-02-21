@@ -21,8 +21,8 @@ public class CncUIButton extends CncUIComponent {
 	private Boundaries boundaries;
 	private Image icon;
 	private Image cache;
+	private boolean activated;
 	private boolean enabled = true;
-	
 	private boolean highlighted;
 	
 	public CncUIButton(Image icon, Runnable runnable, Integer preferredHeight) {
@@ -41,6 +41,14 @@ public class CncUIButton extends CncUIComponent {
 		boundaries = new Boundaries(0, 0, 1, 1);
 	}
 
+	public void setActivated(boolean activated) {
+		if (this.activated == activated) {
+			return;
+		}
+		this.activated = activated;
+		needsRepaint();
+	}
+	
 	
 	public void setEnabled(boolean enabled) {
 		if (this.enabled == enabled) {
@@ -59,7 +67,9 @@ public class CncUIButton extends CncUIComponent {
 		if (boundaries==null || boundaries.width<=0 || boundaries.height<=0) {
 			return;
 		}
-		if (highlighted && isEnabled()) {
+		if (activated && isEnabled()) {
+			gfx.setColor(Color.darkGray);
+		} else if (highlighted && isEnabled()) {
 			gfx.setColor(Color.cyan.darker());
 		} else {
 			gfx.setColor(Color.black);

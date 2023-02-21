@@ -10,17 +10,21 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+import net.github.douwevos.cnc.head.MicroLocation;
 import net.github.douwevos.cnc.model.value.Item;
 import net.github.douwevos.cnc.model.value.Layer;
 import net.github.douwevos.cnc.model.value.Model;
+import net.github.douwevos.cnc.plan.CncHeadState;
+import net.github.douwevos.cnc.plan.CncLineTo;
+import net.github.douwevos.cnc.plan.CncPlan;
+import net.github.douwevos.cnc.plan.CncPlanFactory;
+import net.github.douwevos.cnc.plan.CncPlanItem;
 import net.github.douwevos.cnc.ui.ModelGraphics;
 import net.github.douwevos.cnc.ui.ModelViewer;
 import net.github.douwevos.justflat.shape.PolygonLayer;
-import net.github.douwevos.justflat.shape.PolygonLayerNonSimpleToSimpleSplitter;
-import net.github.douwevos.justflat.shape.PolygonLayerResolutionReducer;
-import net.github.douwevos.justflat.shape.scaler.PolygonLayerScaler;
 import net.github.douwevos.justflat.values.Bounds2D;
-import net.github.douwevos.justflat.values.Line2D;
+import net.github.douwevos.justflat.values.FracLine2D;
+import net.github.douwevos.justflat.values.FracPoint2D;
 import net.github.douwevos.justflat.values.Point2D;
 import net.github.douwevos.justflat.values.shape.Polygon;
 
@@ -57,36 +61,76 @@ public class PlanView extends ModelViewer implements Runnable {
 				drawContour(modelGraphics, contour, true);
 			}
 		}
-		PolygonLayer allContours = planViewModel.allContours;
-		if (allContours != null) {
-			for(Polygon contour : allContours) {
-				drawContour(modelGraphics, contour, false);
+//		PolygonLayer allContours = planViewModel.allContours;
+//		if (allContours != null) {
+//			for(Polygon contour : allContours) {
+//				drawContour(modelGraphics, contour, false);
+//			}
+//		}
+		List<CncPlan> planList = planViewModel.getPlanList();
+		if (planList != null) {
+			for(CncPlan cncPlan : planList) {
+				drawCncPlan(modelGraphics, cncPlan);
 			}
 		}
 		
 	}
 	
 	
+	private void drawCncPlan(ModelGraphics modelGraphics, CncPlan cncPlan) {
+		if (cncPlan == null) {
+			return;
+		}
+		modelGraphics.colorDefault();
+		Point2D lastLocation = null;
+		for(CncPlanItem item : cncPlan) {
+			if (item instanceof CncLineTo) {
+				MicroLocation microLocation = ((CncLineTo) item).getLocation();
+				Point2D location = toPoint(microLocation);
+				if (lastLocation!=null) {
+					modelGraphics.drawLine(lastLocation, location);
+				}
+				lastLocation = location;
+			} else if (item instanceof CncHeadState) {
+				if (((CncHeadState) item).headUp) {
+					modelGraphics.colorSelection();
+				} else {
+					modelGraphics.colorDefault();
+				}
+			}
+		}
+	}
+	
+	public Point2D toPoint(MicroLocation location) {
+		long x = location.x;
+		long y = location.y;
+		return new Point2D(x, y);
+	}
+
+
 	private void drawContour(ModelGraphics modelGraphics, Polygon contour, boolean ghost) {
 		if (ghost) {
-			modelGraphics.faintDefault();
+			modelGraphics.colorHighlight();
 		} else { 
 			modelGraphics.colorDefault();
 		}
-		List<Line2D> lines = contour.createLines(true);
-		Set<Point2D> points = new HashSet<>();
-		for(Line2D line : lines) {
+		List<FracLine2D> lines = contour.createLines(true);
+		Set<FracPoint2D> points = new HashSet<>();
+		for(FracLine2D line : lines) {
 			modelGraphics.drawLine(line.pointA(), line.pointB());
 			points.add(line.pointA());
 			points.add(line.pointB());
 		}
 
-		int r = (int) Math.ceil(5 * camera.getZoom());
-		if (!ghost) {
-			modelGraphics.colorDot();
-		}
-		for(Point2D p : points) {
-			modelGraphics.drawCircle(p, r, true);
+		double zoom = camera.getZoom();
+		if (zoom<4) {
+			int r = (int) Math.ceil(5 * camera.getZoom());
+			if (!ghost) {
+				modelGraphics.colorDot();
+			}
+			for(FracPoint2D p : points) {
+				modelGraphics.drawCircle(p, r, true);
+			}
 		}
 	}
 
@@ -127,63 +171,27 @@ public class PlanView extends ModelViewer implements Runnable {
 			
 			PlanViewModel planViewModel2 = planViewModel;
 			
-			if (planViewModel2!=null && planViewModel2.getAllContours() == null) {
+			if (planViewModel2!=null && planViewModel2.getPlanList() == null) {
 	
 				PolygonLayer contourLayer = new PolygonLayer();
-				
 				Model model = planViewModel2.getSnapshot();
 				Layer layer = model.layerAt(0);
 				for(Item item : layer) {
 					item.writeToContourLayer(contourLayer, 0);
 				}
-				
-				PolygonLayer allContours =  new PolygonLayer();
-				
-//				for(Contour contour : contourLayer.contours) {
-//					allContours.add(contour);
-//				}
+				planViewModel.setGhostLayer(contourLayer);
 				
 				
 				long toolDiameter = 150;
+				long depth = 0;
 				
-				int discSize = 800;
-				int discSizeSq = discSize*discSize;
-
-
-				PolygonLayerResolutionReducer resolutionReducer = new PolygonLayerResolutionReducer();
-				PolygonLayer reducedResolution = resolutionReducer.reduceResolution(contourLayer, discSizeSq, 1);
-
-				PolygonLayerNonSimpleToSimpleSplitter splitter = new PolygonLayerNonSimpleToSimpleSplitter();
-				PolygonLayer cutted = splitter.createSimplePolygonLayer(reducedResolution);
-
+				CncPlanFactory cncPlanFactory = new CncPlanFactory();
+				List<CncPlan> producedPlanList = cncPlanFactory.producePlanList(model, 0, toolDiameter, depth);
+				planViewModel.setPlanList(producedPlanList);
 				
 				
-//				for(Contour contour : cutted.contours) {
-//					allContours.add(contour);
-//				}
-
-				
-				for(int idx=1; idx<100; idx++) {
-					PolygonLayer duplicate = cutted.duplicate();
-					PolygonLayerScaler contourLayerScaler = new PolygonLayerScaler();
-					PolygonLayer scaled = contourLayerScaler.scale(duplicate, idx*toolDiameter, false);
-					if (scaled.isEmpty()) {
-						break;
-					}
-					System.err.println("scaled.count="+scaled.count());
-					for(Polygon contour : scaled) {
-						allContours.add(contour);
-					}
-				}
-				System.err.println("allCo="+allContours);
-				
-				planViewModel.setPlanPath(allContours);
-				planViewModel.setGhostLayer(cutted);
 				SwingUtilities.invokeLater(() -> {
-					
 					repaint();
-					System.err.println("repaint:"+cutted.count());
-					
 				});
 				repaintModel();
 			}
@@ -197,6 +205,8 @@ public class PlanView extends ModelViewer implements Runnable {
 		}
 	}
 	
+
+
 	private void repaintModel() {
 		System.err.println("##"+planViewModel);
 		modelImageDirty = true;

@@ -51,6 +51,7 @@ public class MainHoler {
 //			DesignPerspective designPerspective = new DesignPerspective();
 			panel.selectPerspective(designPerspective);
 			
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			frame.setVisible(true);
 			
 		});

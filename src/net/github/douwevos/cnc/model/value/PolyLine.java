@@ -3,9 +3,11 @@ package net.github.douwevos.cnc.model.value;
 import net.github.douwevos.cnc.poly.PolyForm;
 import net.github.douwevos.cnc.poly.PolyForm.FracPolyOutput;
 import net.github.douwevos.justflat.shape.PolygonLayer;
+import net.github.douwevos.justflat.values.Bounds2D;
 import net.github.douwevos.justflat.values.FracPoint2D;
 import net.github.douwevos.justflat.values.Point2D;
 import net.github.douwevos.justflat.values.shape.Polygon;
+import net.github.douwevos.justflat.values.shape.Polygon.PolygonBuilder;
 
 public class PolyLine implements Item {
 
@@ -25,6 +27,16 @@ public class PolyLine implements Item {
 		return depth;
 	}
 	
+	@Override
+	public Bounds2D calculateBounds() {
+		return polyForm.calculateBounds();
+	}
+	
+	@Override
+	public long getMaxDepth() {
+		return depth;
+	}
+	
 	
 	@Override
 	public void writeToContourLayer(PolygonLayer polygonLayer, long atDepth) {
@@ -34,16 +46,16 @@ public class PolyLine implements Item {
 
 		PolyFormToContourOutput fracPolyOutput = new PolyFormToContourOutput(); 
 		polyForm.produce(fracPolyOutput, 1d, 0, 0);
-		Polygon polygon = fracPolyOutput.polygon;
-		polygon.setClosed(true);
-		polygonLayer.add(polygon);
+		PolygonBuilder polygon = fracPolyOutput.polygon;
+		polygon.closed(true);
+		polygonLayer.add(polygon.build());
 	}
 	
 	
 	
 	private static class PolyFormToContourOutput implements FracPolyOutput {
 
-		public Polygon polygon = new Polygon();
+		public PolygonBuilder polygon = new Polygon().builder();
 		
 		@Override
 		public void contourBegin() {
