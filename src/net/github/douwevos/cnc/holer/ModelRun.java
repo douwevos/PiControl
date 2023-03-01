@@ -1,6 +1,5 @@
 package net.github.douwevos.cnc.holer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -15,20 +14,16 @@ import net.github.douwevos.cnc.model.value.Layer;
 import net.github.douwevos.cnc.model.value.Model;
 import net.github.douwevos.cnc.plan.CncPlan;
 import net.github.douwevos.cnc.plan.CncPlanFactory;
-import net.github.douwevos.cnc.plan.CncPlanItem;
 import net.github.douwevos.cnc.tool.Tool;
 import net.github.douwevos.cnc.type.Distance;
 import net.github.douwevos.cnc.type.DistanceUnit;
-import net.github.douwevos.justflat.shape.PolygonLayer;
-import net.github.douwevos.justflat.shape.PolygonLayerNonSimpleToSimpleSplitter;
-import net.github.douwevos.justflat.shape.PolygonLayerResolutionReducer;
-import net.github.douwevos.justflat.shape.scaler.PolygonLayerScaler;
+import net.github.douwevos.justflat.logging.Log;
 import net.github.douwevos.justflat.values.Bounds2D;
-import net.github.douwevos.justflat.values.Point2D;
-import net.github.douwevos.justflat.values.shape.Polygon;
 
 public class ModelRun {
 
+	private Log log = Log.instance(true);
+	
 	private final CncConfiguration configuration;
 	private final CncHeadService cncHeadService;
 	private final Model model;
@@ -65,15 +60,28 @@ public class ModelRun {
 		CncPlanFactory planFactory = new CncPlanFactory();
 		
 		long maxDrop = configuration.getMaxDrop();
-		long toolDiameter = 150;
+		long toolDiameter = 1900;
 		
 		
 		Long nextDepth = planFactory.nextLayerDepth(layer, 0, maxDrop/2);
 		while(nextDepth != null) {
 			List<CncPlan> planList = planFactory.producePlanList(layer, toolDiameter, nextDepth);
 			for(CncPlan plan : planList) {
+				if (plan==null) {
+					log.error("Error: plan is null");
+					continue;
+				}
+				if (runContext == null) {
+					log.error("Error: runContext is null");
+				}
 				runContext.setFloating(true);
-				plan.streamItems().forEach(pi -> pi.runCnc(runContext));
+				plan.streamItems().forEach(pi -> {
+					if (pi==null) {
+						log.error("Error: pi is null");
+					}else {
+						pi.runCnc(runContext);
+					}
+				});
 			}
 			
 			long min = nextDepth+1;
@@ -81,70 +89,8 @@ public class ModelRun {
 			
 			nextDepth = planFactory.nextLayerDepth(layer, min, max);
 		}
-		
-		
-//
-//		
-//		
-//		
-//		
-//		
-//		int discSize = 800;
-//		int discSizeSq = discSize*discSize;
-//
-//		PolygonLayerResolutionReducer resolutionReducer = new PolygonLayerResolutionReducer();
-//		PolygonLayer reducedResolution = resolutionReducer.reduceResolution(contourLayer, discSizeSq, 1);
-//
-//		PolygonLayerNonSimpleToSimpleSplitter splitter = new PolygonLayerNonSimpleToSimpleSplitter();
-//		PolygonLayer cutted = splitter.createSimplePolygonLayer(reducedResolution);
-//
-//		List<PolygonLayer> subLayers = new ArrayList<>();
-//		
-//		for(int idx=1; idx<100; idx++) {
-//			PolygonLayer duplicate = cutted.duplicate();
-//			PolygonLayerScaler contourLayerScaler = new PolygonLayerScaler();
-//			PolygonLayer scaled = contourLayerScaler.scale(duplicate, idx*toolDiameter, false);
-//			if (scaled.isEmpty()) {
-//				break;
-//			}
-//			subLayers.add(scaled);
-//		}
-//
-//		for(int idx=subLayers.size()-1; idx>=0; idx--) {
-//			PolygonLayer subLayer = subLayers.get(idx);
-//			cncSingleSubLayer(subLayer, depth);
-//		}
-		
-		
 	}
 
-	private void cncSingleSubLayer(PolygonLayer subLayer, long depth) {
-		subLayer.streamPolygons().forEach(p -> cncSinglePolygon(p, depth));
-		
-	}
-
-	private void cncSinglePolygon(Polygon polygon, long depth) {
-		runContext.setFloating(true);
-		Point2D dotAt = polygon.dotAt(0);
-		long mx = Distance.ofMillMeters(dotAt.x).asMicrometers()/1000;
-		MicroLocation startMicroLocation = toMicroLocation(dotAt, depth);
-		runContext.lineTo(startMicroLocation, CncHeadSpeed.FAST);
-		runContext.setFloating(false);
-		
-		polygon.streamDots().forEach(dot -> {
-			MicroLocation dotMicroLocation = toMicroLocation(dot, depth);
-			runContext.lineTo(dotMicroLocation, CncHeadSpeed.NORMAL);
-			System.out.println("moving to:"+dotMicroLocation);
-		});
-		
-		runContext.setFloating(true);
-	}
-	
-	private MicroLocation toMicroLocation(Point2D dot, long depth) {
-		long mx = Distance.ofMillMeters(dot.x).asMicrometers()/1000;
-		long my = Distance.ofMillMeters(dot.y).asMicrometers()/1000;
-		return new MicroLocation(mx, my, depth);
-	}
 
 	private SourcePiece hackExtractSourcePiece(Model model) {
 		return model.streamLayers().map(this::hackExtractSourcePiece).reduce(this::reduceSourcePiece).orElse(null);
@@ -234,7 +180,7 @@ public class ModelRun {
 		}
 
 		public void lineTo(MicroLocation location, CncHeadSpeed speed) {
-			actionQueue.lineTo(withFloat(location), speed);
+			actionQueue.lineTo(withFloat(location), isFloatingAbove ? CncHeadSpeed.FAST : speed);
 			last = location;
 		}
 

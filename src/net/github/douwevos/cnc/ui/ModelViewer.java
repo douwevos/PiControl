@@ -18,7 +18,6 @@ import java.awt.image.VolatileImage;
 
 import javax.swing.JPanel;
 
-import net.github.douwevos.cnc.holer.design.CameraLockType;
 import net.github.douwevos.cnc.ui.Camera.CameraListener;
 import net.github.douwevos.cnc.ui.controller.MouseEventType;
 import net.github.douwevos.justflat.values.Bounds2D;

@@ -16,7 +16,6 @@ import net.github.douwevos.cnc.holer.CncMainPanel;
 import net.github.douwevos.cnc.holer.CncPerspectiveBoard;
 import net.github.douwevos.cnc.holer.CncRuntimeContext;
 import net.github.douwevos.cnc.holer.calibration.CalibrationPerspective;
-import net.github.douwevos.cnc.holer.design.DesignPerspective;
 import net.github.douwevos.cnc.holer.run.RunPerspective;
 import net.github.douwevos.cnc.ui.editor.EditorPerspective;
 import net.github.douwevos.cnc.ui.plan.PlanPerspective;
@@ -46,7 +45,7 @@ public class MainHoler {
 			
 			
 
-			DesignPerspective designPerspective = createPerspectiveMenu(panel);
+			EditorPerspective designPerspective = createPerspectiveMenu(panel);
 			
 //			DesignPerspective designPerspective = new DesignPerspective();
 			panel.selectPerspective(designPerspective);
@@ -68,7 +67,7 @@ public class MainHoler {
 //		gpio.shutdown();
 	}
 
-	private static DesignPerspective createPerspectiveMenu(CncPerspectiveBoard perspectiveBoard) {
+	private static EditorPerspective createPerspectiveMenu(CncPerspectiveBoard perspectiveBoard) {
 		CncUIFrame frameMenu = new CncUIFrame("Perspective");
 
 		CncUIButtons buttons = new CncUIButtons();
@@ -81,11 +80,11 @@ public class MainHoler {
 		}));
 
 
-		DesignPerspective designPerspective = new DesignPerspective(frameMenu);
-
-		buttons.addButton(new CncUIButton("Design", () -> {
-			perspectiveBoard.selectPerspective(designPerspective);
-		}));
+//		DesignPerspective designPerspective = new DesignPerspective(frameMenu);
+//
+//		buttons.addButton(new CncUIButton("Design", () -> {
+//			perspectiveBoard.selectPerspective(designPerspective);
+//		}));
 
 		CalibrationPerspective calibrationPerspective = new CalibrationPerspective(frameMenu);
 		buttons.addButton(new CncUIButton("Calibration", () -> {
@@ -105,7 +104,7 @@ public class MainHoler {
 		
 		frameMenu.add(buttons);
 		
-		return designPerspective;
+		return editorPerspective;
 	}
 
 }

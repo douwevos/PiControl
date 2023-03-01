@@ -24,9 +24,9 @@ public class CncRuntimeContext {
 
 	private final CncConfiguration configuration;
 	private final CncHeadService headService;
-	private final HolerModel holerModel = new HolerModel(false);
+//	private final HolerModel holerModel = new HolerModel(false);
 	
-	private final CncProgramRunner oldCncProgramRunner;
+//	private final CncProgramRunner oldCncProgramRunner;
 	private final NewCncProgramRunner cncProgramRunner; 
 	
 	private EditableModel editableModel = new EditableModel();
@@ -51,38 +51,39 @@ public class CncRuntimeContext {
 	public CncRuntimeContext(CncConfiguration configuration , CncHeadService headService) {
 		this.configuration = configuration;
 		this.headService = headService;
-		oldCncProgramRunner = new CncProgramRunner(configuration, headService);
+//		oldCncProgramRunner = new CncProgramRunner(configuration, headService);
 		cncProgramRunner = new NewCncProgramRunner(configuration, headService);
 
 		
 		EditableLayer layer = new EditableLayer();
-		layer.addItem(new EditableRectangle(new Bounds2D(10,10,10000,10000), 20));
+
+		layer.addItem(new EditableRectangle(new Bounds2D(10,10,156000,50000), 2000));
 		List<PolyDot> dotList = new ArrayList<>();
-		dotList.add(new PolyDot(2000,100, false));
-		dotList.add(new PolyDot(800,7900, false));
-		dotList.add(new PolyDot(5800,2500, false));
-		dotList.add(new PolyDot(4500,700, true));
+		dotList.add(new PolyDot(30000,100, false));
+		dotList.add(new PolyDot(800,4800, false));
+		dotList.add(new PolyDot(85000,4800, false));
+		dotList.add(new PolyDot(25881,1665, true));
 		PolyForm polyForm = new PolyForm(dotList , true);
-		layer.addItem(new EditablePolyLine(polyForm , 20));
+//		layer.addItem(new EditablePolyLine(polyForm , 2000));
 
 		
 		TextLayout textLayout = new TextLayout(ttf2, "Douwe");
-		EditableText editableText = new EditableText(textLayout, new Point2D(100, 8000), 3000, 50);
+		EditableText editableText = new EditableText(textLayout, new Point2D(1000, 5800), 55000, 2000);
 		layer.addItem(editableText);
 		
 		editableModel.addLayer(layer);
 
 		
 	}
+//	
+//	public HolerModel getHolerModel() {
+//		return holerModel;
+//	}
+//	
 	
-	public HolerModel getHolerModel() {
-		return holerModel;
-	}
-	
-	
-	public CncProgramRunner getCncProgramRunner() {
-		return oldCncProgramRunner;
-	}
+//	public CncProgramRunner getCncProgramRunner() {
+//		return oldCncProgramRunner;
+//	}
 
 	public NewCncProgramRunner getNewCncProgramRunner() {
 		return cncProgramRunner;

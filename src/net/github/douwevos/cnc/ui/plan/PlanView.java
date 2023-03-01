@@ -182,7 +182,7 @@ public class PlanView extends ModelViewer implements Runnable {
 				planViewModel.setGhostLayer(contourLayer);
 				
 				
-				long toolDiameter = 150;
+				long toolDiameter = 1900;
 				long depth = 0;
 				
 				CncPlanFactory cncPlanFactory = new CncPlanFactory();

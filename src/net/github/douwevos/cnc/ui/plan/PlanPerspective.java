@@ -2,7 +2,6 @@ package net.github.douwevos.cnc.ui.plan;
 
 import net.github.douwevos.cnc.holer.CncPerspective;
 import net.github.douwevos.cnc.holer.CncPerspectiveBoard;
-import net.github.douwevos.cnc.holer.CncProgramRunner;
 import net.github.douwevos.cnc.holer.CncRuntimeContext;
 import net.github.douwevos.cnc.holer.NewCncProgramRunner;
 import net.github.douwevos.cnc.model.EditableModel;

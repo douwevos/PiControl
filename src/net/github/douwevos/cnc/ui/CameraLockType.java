@@ -1,4 +1,4 @@
-package net.github.douwevos.cnc.holer.design;
+package net.github.douwevos.cnc.ui;
 
 public enum CameraLockType {
 	FREE,

@@ -30,7 +30,7 @@ public class CncPlanFactory {
 			if (maxItemDepth>maxDepth) {
 				maxItemDepth = maxDepth;
 			}
-			if (!nextLayerInfo.depthSet || nextLayerInfo.depth>maxItemDepth) {
+			if (!nextLayerInfo.depthSet || nextLayerInfo.depth<maxItemDepth) {
 				nextLayerInfo.depthSet = true;
 				nextLayerInfo.depth = maxItemDepth;
 			}
@@ -57,8 +57,8 @@ public class CncPlanFactory {
 			item.writeToContourLayer(contourLayer, 0);
 		}
 		
-		int discSize = (int) toolDiameter;
-		int discSizeSq = discSize*discSize;
+		long discSize = toolDiameter;
+		long discSizeSq = discSize*discSize;
 
 
 		PolygonLayerResolutionReducer resolutionReducer = new PolygonLayerResolutionReducer();
@@ -83,7 +83,12 @@ public class CncPlanFactory {
 		System.err.println("subLayers="+subLayers);
 		
 		
-		List<CncPlan> planList = subLayersToSingleCncPolygon(subLayers, depth);
+		List<CncPlan> planList = subLayersToSingleCncPolygon(subLayers, toolDiameter, depth);
+		
+		
+		List<CncPlan> planListFinalCut = finalCut(contourLayer, toolDiameter, depth);
+		planList.addAll(planListFinalCut);
+		
 		return planList;
 //		planViewModel.setPlanList(planList);
 //		
@@ -93,8 +98,37 @@ public class CncPlanFactory {
 	}
 
 
-	private List<CncPlan> subLayersToSingleCncPolygon(List<PolygonLayer> subLayers, long depth) {
+	private List<CncPlan> finalCut(PolygonLayer cutted, long toolDiameter, long depth) {
+
+		List<CncPlan> finalPlanList = new ArrayList<>();
+		
+		for(Polygon polygon : cutted) {
+		
+			List<Point2D> allDots = polygon.streamDots().collect(Collectors.toList());
+			Point2D startDot = allDots.get(0);
+			allDots.add(startDot);
+			
+			MicroLocation startMicroLocation = toMicroLocation(startDot, depth);
+			CncPlan newPlan = new CncPlan();
+			newPlan.add(new CncHeadState(true));
+			newPlan.add(new CncLineTo(startMicroLocation));
+			newPlan.add(new CncHeadState(false));
+			
+			allDots.stream()
+				.map(dot -> toMicroLocation(dot, depth))
+				.forEach(ml -> newPlan.add(new CncLineTo(ml)));
+			finalPlanList.add(newPlan);
+		}
+
+		return finalPlanList;
+	}
+
+
+	private List<CncPlan> subLayersToSingleCncPolygon(List<PolygonLayer> subLayers, long toolDiameter, long depth) {
 		List<List<PolygonNode>> polygonNodesLayers = new ArrayList<>();
+		if (subLayers.isEmpty()) {
+			return new ArrayList<>();
+		}
 		
 		List<PolygonNode> polygonNodes = null;
 		for(int idx=0; idx<subLayers.size(); idx++) {
@@ -110,11 +144,11 @@ public class CncPlanFactory {
 		for(int idx=polygonNodesLayers.size()-1; idx>0; idx--) {
 			polygonNodes = polygonNodesLayers.get(idx);
 			for(PolygonNode node : polygonNodes) {
-				node.produceUpwardPlan(depth);
+				node.produceUpwardPlan(toolDiameter, depth);
 			}
 		}
 		List<PolygonNode> topPolygonLayer = polygonNodesLayers.get(0);
-		return topPolygonLayer.stream().map(p -> p.plan).collect(Collectors.toList());
+		return topPolygonLayer.stream().filter(p -> p.plan != null).map(p -> p.plan).collect(Collectors.toList());
 	}
 
 	private PolygonNode producePolygonNode(Polygon polygon, List<PolygonNode> parentPolygonNodes) {
@@ -135,7 +169,7 @@ public class CncPlanFactory {
 	static class PolygonNode {
 		
 		private final PolygonNode parent;
-		private final List<PolygonNode> children = new ArrayList();
+		private final List<PolygonNode> children = new ArrayList<>();
 		private final Polygon polygon;
 		private final PolygonLinesWrapper polygonLinesWrapper;
 		private CncPlan plan;
@@ -157,7 +191,7 @@ public class CncPlanFactory {
 
 
 		
-		public void produceUpwardPlan(long depth) {
+		public void produceUpwardPlan(long toolDiameter, long depth) {
 			if (!children.isEmpty()) {
 				for(PolygonNode child : children) {
 					if (child.plan==null) {
@@ -165,9 +199,9 @@ public class CncPlanFactory {
 					}
 				}
 				
-				connectPlans(depth);
+				connectPlans(toolDiameter, depth);
 				if (parent != null) {
-					parent.produceUpwardPlan(depth);
+					parent.produceUpwardPlan(toolDiameter, depth);
 				}
 				return;
 			}
@@ -185,22 +219,25 @@ public class CncPlanFactory {
 			planEnd = allDots.get(allDots.size()-1);
 			
 			if (parent != null) {
-				parent.produceUpwardPlan(depth);
+				parent.produceUpwardPlan(toolDiameter, depth);
 			}
 
 		}
 		
-		private void connectPlans(long depth) {
+		private void connectPlans(long toolDiameter, long depth) {
 			CncPlan newPlan = new CncPlan();
 			Point2D lastLocation = null; 
 			for(int idx=0; idx<children.size(); idx++) {
 				PolygonNode child = children.get(idx);
-				if (idx!=0) {
+//				if (idx!=0) {
 					newPlan.add(new CncHeadState(true));
 					MicroLocation firstLocation = child.plan.getFirstLocation();
 					newPlan.add(new CncLineTo(firstLocation));
 					newPlan.add(new CncHeadState(false));
-				} else {
+//				} else {
+//					planStart = child.planStart;
+//				}
+				if (idx==0) {
 					planStart = child.planStart;
 				}
 				
@@ -210,6 +247,18 @@ public class CncPlanFactory {
 			
 			
 			int pointIndex = polygon.findClosestPointIndex(lastLocation.toFractional());
+			Point2D nextLocation = polygon.dotAt(pointIndex);
+			long squaredDistance = nextLocation.squaredDistance(lastLocation);
+			
+			long maxdist = (toolDiameter*toolDiameter*9l)/2l;
+			if (squaredDistance>maxdist) {
+				newPlan.add(new CncHeadState(true));
+				MicroLocation nLocation = toMicroLocation(nextLocation, depth);
+				newPlan.add(new CncLineTo(nLocation));
+				newPlan.add(new CncHeadState(false));
+				
+			}
+			
 			List<Point2D> allDots = polygon.streamDots().collect(Collectors.toList());
 			Stream<Point2D> streamStart = allDots.subList(pointIndex, allDots.size()).stream();
 			Stream<Point2D> streamEnd = allDots.subList(0, pointIndex+1).stream();
@@ -228,6 +277,12 @@ public class CncPlanFactory {
 			return new MicroLocation(mx, my, depth);
 		}
 	}
-	
+
+	private MicroLocation toMicroLocation(Point2D dot, long depth) {
+		long mx = Distance.ofMillMeters(dot.x).asMicrometers()/1000;
+		long my = Distance.ofMillMeters(dot.y).asMicrometers()/1000;
+		return new MicroLocation(mx, my, depth);
+	}
+
 
 }

@@ -12,7 +12,7 @@ public class CncConfigurationImpl implements CncConfiguration {
 	private final double bfDotsPerMicro = 100d/317;
 	
 
-	MaterialSpeed materialSpeed = MaterialSpeed.IRON;
+	MaterialSpeed materialSpeed = MaterialSpeed.SOFT_WOOD2;
 	
 	
 	
@@ -87,6 +87,8 @@ public class CncConfigurationImpl implements CncConfiguration {
 		VERY_SLOW("135.000", "1.750.000", "2.050.000", "3.000.000", 100),
 
 		FAST_WOOD("55.000", "650.000", "0.900.000", "2.000.000", 10),
+
+		JUST_FAST("85.000", "120.000", "120.000", "4.000.000", 200),
 
 		;
 		

@@ -1,20 +1,14 @@
 package net.github.douwevos.cnc.holer.run;
 
-import net.github.douwevos.cnc.head.CncActionQueue;
-import net.github.douwevos.cnc.head.CncHeadService;
 import net.github.douwevos.cnc.holer.CncPerspective;
 import net.github.douwevos.cnc.holer.CncPerspectiveBoard;
-import net.github.douwevos.cnc.holer.CncProgramRunner;
-import net.github.douwevos.cnc.holer.CncProgramRunner.Listener;
 import net.github.douwevos.cnc.holer.CncRuntimeContext;
-import net.github.douwevos.cnc.holer.HolerModel;
-import net.github.douwevos.cnc.holer.HolerModelRun;
 import net.github.douwevos.cnc.ui.widget.CncUIButton;
 import net.github.douwevos.cnc.ui.widget.CncUIButtons;
 import net.github.douwevos.cnc.ui.widget.CncUIFrame;
 import net.github.douwevos.cnc.ui.widget.CncUIPanel;
 
-public class RunPerspective implements CncPerspective, Listener {
+public class RunPerspective implements CncPerspective/*, Listener */{
 
 	private CncPerspectiveBoard perspectiveBoard;
 
@@ -24,7 +18,7 @@ public class RunPerspective implements CncPerspective, Listener {
 	CncUIButton buttonTogglePause;
 	CncUIButton buttonNext;
 	
-	HolerModelRun currentRun;
+//	HolerModelRun currentRun;
 
 	
 	public RunPerspective(CncUIFrame frameMenu) {
@@ -55,14 +49,14 @@ public class RunPerspective implements CncPerspective, Listener {
 	@Override
 	public void hide() {
 		perspectiveBoard.setPropertiesPanel(null);
-		perspectiveBoard.getRuntimeContext().getCncProgramRunner().removeListener(this);
+//		perspectiveBoard.getRuntimeContext().getCncProgramRunner().removeListener(this);
 	}
 
 	@Override
 	public void show(CncPerspectiveBoard perspectiveBoard) {
 		perspectiveBoard.setPropertiesPanel(propertyPanel);
 		this.perspectiveBoard = perspectiveBoard;
-		perspectiveBoard.getRuntimeContext().getCncProgramRunner().addListener(this);
+//		perspectiveBoard.getRuntimeContext().getCncProgramRunner().addListener(this);
 	}
 
 	
@@ -72,16 +66,13 @@ public class RunPerspective implements CncPerspective, Listener {
 				return;
 			}
 			CncRuntimeContext runtimeContext = perspectiveBoard.getRuntimeContext();
-			CncProgramRunner cncProgramRunner = runtimeContext.getCncProgramRunner();
+//			CncProgramRunner cncProgramRunner = runtimeContext.getCncProgramRunner();
 			
 			
-			HolerModel holerModel = runtimeContext.getHolerModel();
-			cncProgramRunner.start(holerModel);
+//			HolerModel holerModel = runtimeContext.getHolerModel();
+//			cncProgramRunner.start(holerModel);
 			
 //			
-//			CncControlContext cncControlContext = runtimeContext.getCncControlContext();
-//			HolerModelRun modelRun = new HolerModelRun(holerModel, cncControlContext);
-//			modelRun.run();
 			
 		};
 		return new CncUIButton("Start", actionRun);
@@ -94,14 +85,10 @@ public class RunPerspective implements CncPerspective, Listener {
 				return;
 			}
 			CncRuntimeContext runtimeContext = perspectiveBoard.getRuntimeContext();
-			CncProgramRunner cncProgramRunner = runtimeContext.getCncProgramRunner();
-			
-			cncProgramRunner.nextItem();
-			
+//			CncProgramRunner cncProgramRunner = runtimeContext.getCncProgramRunner();
 //			
-//			CncControlContext cncControlContext = runtimeContext.getCncControlContext();
-//			HolerModelRun modelRun = new HolerModelRun(holerModel, cncControlContext);
-//			modelRun.run();
+//			cncProgramRunner.nextItem();
+			
 			
 		};
 		return new CncUIButton("Next", actionRun);
@@ -112,39 +99,34 @@ public class RunPerspective implements CncPerspective, Listener {
 			if (perspectiveBoard == null) {
 				return;
 			}
-			HolerModelRun run = currentRun;
-			if (run == null) {
-				return;
-			}
-			
-			CncRuntimeContext runtimeContext = perspectiveBoard.getRuntimeContext();
-			CncHeadService headService = runtimeContext.getHeadService();
-			CncActionQueue activeQueue = headService.getContext().getActiveQueue();
-			
-			CncActionQueue runActionQueue = run.getActionQueue();
-			
-			if (activeQueue==runActionQueue) {
-				activeQueue.branch(true);
-			} else {
-				activeQueue.returnFromBranch(false);
-			}
-			
-			
+//			HolerModelRun run = currentRun;
+//			if (run == null) {
+//				return;
+//			}
 //			
-//			CncControlContext cncControlContext = runtimeContext.getCncControlContext();
-//			HolerModelRun modelRun = new HolerModelRun(holerModel, cncControlContext);
-//			modelRun.run();
+//			CncRuntimeContext runtimeContext = perspectiveBoard.getRuntimeContext();
+//			CncHeadService headService = runtimeContext.getHeadService();
+//			CncActionQueue activeQueue = headService.getContext().getActiveQueue();
+//			
+//			CncActionQueue runActionQueue = run.getActionQueue();
+//			
+//			if (activeQueue==runActionQueue) {
+//				activeQueue.branch(true);
+//			} else {
+//				activeQueue.returnFromBranch(false);
+//			}
+			
 			
 		};
 		return new CncUIButton("Toggle Pause", actionTogglePause);
 	}
 
 	
-	@Override
-	public void onNewModelRun(HolerModelRun run) {
-		buttonRun.setEnabled(run==null);
-		buttonTogglePause.setEnabled(run!=null);
-		currentRun = run;
-	}
+//	@Override
+//	public void onNewModelRun(HolerModelRun run) {
+//		buttonRun.setEnabled(run==null);
+//		buttonTogglePause.setEnabled(run!=null);
+//		currentRun = run;
+//	}
 	
 }

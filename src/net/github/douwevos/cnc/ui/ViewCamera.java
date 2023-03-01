@@ -1,4 +1,4 @@
-package net.github.douwevos.cnc.holer.design;
+package net.github.douwevos.cnc.ui;
 
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
