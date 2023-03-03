@@ -186,7 +186,7 @@ public class CncPlanFactory {
 		}
 		
 		public boolean containsPolygon(Polygon polygon) {
-			return polygon.streamDots().map(p -> p.toFractional()).allMatch(fp -> polygonLinesWrapper.contains(fp));
+			return polygon.streamDots().map(p -> p.toFractional()).mapToDouble(fp -> polygonLinesWrapper.insideValue(fp)).sum()>=0d;
 		}
 
 

@@ -6,7 +6,6 @@ import net.github.douwevos.cnc.holer.CncRuntimeContext;
 import net.github.douwevos.cnc.holer.NewCncProgramRunner;
 import net.github.douwevos.cnc.model.EditableModel;
 import net.github.douwevos.cnc.model.value.Model;
-import net.github.douwevos.cnc.ui.editor.rectangle.PolyLineCreator;
 import net.github.douwevos.cnc.ui.widget.CncUIButton;
 import net.github.douwevos.cnc.ui.widget.CncUIButtons;
 import net.github.douwevos.cnc.ui.widget.CncUIFrame;

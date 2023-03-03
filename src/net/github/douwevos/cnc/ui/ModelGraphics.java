@@ -1,5 +1,6 @@
 package net.github.douwevos.cnc.ui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
@@ -119,5 +120,9 @@ public class ModelGraphics {
 		gfx.drawLine(x0, y0, x1, y1);
 	}
 
+	public void setLineWidth(double width) {
+		double viewRadius = camera.toViewSize(width);
+		gfx.setStroke(new BasicStroke((float) viewRadius, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+	}
 
 }

@@ -179,6 +179,11 @@ public class Camera {
 		return Math.round(modelSize/cc.zoom);
 	}
 
+	public double toViewSize(double modelSize) {
+		CameraConfig cc = cameraConfig;
+		return modelSize/cc.zoom;
+	}
+
 	public long toModelSize(long viewSize) {
 		CameraConfig cc = cameraConfig;
 		return Math.round(viewSize*cc.zoom);
